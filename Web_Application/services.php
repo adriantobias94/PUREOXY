@@ -81,34 +81,25 @@
               
           });
               <?php
-
-
         $hostdb = "localhost";  // MySQl host
         $userdb = "root";  // MySQL username
         $passdb = "";  // MySQL password
         $namedb = "pureoxy";  // MySQL database name
-
           $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
-
            $strQuery = "SELECT latitude, longitude FROM module";
-
       // Execute the query, or else return the error message.
           $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
         
             while($row = mysqli_fetch_array($result)) {
                ?>  addMarker({lat:<?php echo $row["latitude"]?>, lng:<?php echo $row["longitude"]?>});<?php
-
           }
     ?>
                      
-
           //add Marker function
           function addMarker(coords){
-
             var infoWindow = new google.maps.InfoWindow({
             content: 'Hi'
            });
-
           var marker = new google.maps.Marker({
             position: coords,
             map: map
@@ -122,51 +113,32 @@
               var lat = marker.getPosition().lat();
               //var longitude = marker.lng();
               
-              document.cookie = "lat =" + lat; 
+              document.cookie = "lat =" + lat;
               //document.cookie = "longitude =" + longitude;
+
                <?php
                 
                 $lat = $_COOKIE['lat']; 
                 //$lng = $_COOKIE['longitude'];
                $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
-
                   $strQuery = "SELECT DISTINCT * FROM module WHERE latitude='" .$lat. "'"; //AND longitude='".$lng."'";
-
               // Execute the query, or else return the error message.
                $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
         
                 while($row = mysqli_fetch_array($result)) {
                     ?> infoWindow.setContent('<?php echo "ID: " .$row['location']. " "; ?>');
-
-
                     <?php
-
-
           }
-
-
-
-
     ?>
           });
          google.maps.event.addListener(marker,'mouseout', function(){
             
-
-            function setCookie(cname, cvalue, exMins) {
-               var d = new Date();
-               d.setTime(d.getTime() + (exMins*60*1000));
-              var expires = "expires="+d.toUTCString();  
-              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-            }
-            setCookie('lat','',0);
+            
             infoWindow.close();
-
             $("#analytics").load('pick.html');
          });
-
         }
   } 
-
           </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBG-tC1rtLmm_O3A3Nw_ifto3QF0kYBdZw&callback=initMap">
