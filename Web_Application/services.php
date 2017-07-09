@@ -69,7 +69,7 @@
         
       </div>
   
-      <script>
+      <script type="text/javascript">
       var infoWindow = new google.maps.InfoWindow(); 
         function initMap() {
             //map options
@@ -80,16 +80,33 @@
             center: uluru
               
           });
-           
-                      addMarker({lat:14.5995, lng: 120.9842});
-                      addMarker({lat:14.5547, lng: 121.0244});
-                      addMarker({lat:14.5764, lng: 121.0851});
+              <?php
+
+
+        $hostdb = "localhost";  // MySQl host
+        $userdb = "root";  // MySQL username
+        $passdb = "";  // MySQL password
+        $namedb = "pureoxy";  // MySQL database name
+
+          $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
+
+           $strQuery = "SELECT latitude, longitude FROM module";
+
+      // Execute the query, or else return the error message.
+          $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+        
+            while($row = mysqli_fetch_array($result)) {
+               ?>  addMarker({lat:<?php echo $row["latitude"]?>, lng:<?php echo $row["longitude"]?>});<?php
+
+          }
+    ?>
+                     
 
           //add Marker function
           function addMarker(coords){
 
             var infoWindow = new google.maps.InfoWindow({
-            content:'<h2>CO2: 121.0<br /> CO: 100.0<br /> Note: Harmful to Pregnant</h2>'
+            content: 'Hi'
            });
 
           var marker = new google.maps.Marker({
@@ -98,17 +115,52 @@
            });
          
          google.maps.event.addListener(marker,'mouseover',function(){
+        
               
-              infoWindow.open(map,marker); 
-
+              infoWindow.open(map,marker);
               $("#analytics").load('sample.php');
+              var lat = marker.getPosition().lat();
+              //var longitude = marker.lng();
+              
+              document.cookie = "lat =" + lat; 
+              //document.cookie = "longitude =" + longitude;
+               <?php
+                
+                $lat = $_COOKIE['lat']; 
+                //$lng = $_COOKIE['longitude'];
+               $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
 
-              // document.getElementById("info").innerHTML = "You chose Chchu we havee chuchcuhcuchcu";   
+                  $strQuery = "SELECT DISTINCT * FROM module WHERE latitude='" .$lat. "'"; //AND longitude='".$lng."'";
 
+              // Execute the query, or else return the error message.
+               $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+        
+                while($row = mysqli_fetch_array($result)) {
+                    ?> infoWindow.setContent('<?php echo "ID: " .$row['location']. " "; ?>');
+
+
+                    <?php
+
+
+          }
+
+
+
+
+    ?>
           });
          google.maps.event.addListener(marker,'mouseout', function(){
+            
+
+            function setCookie(cname, cvalue, exMins) {
+               var d = new Date();
+               d.setTime(d.getTime() + (exMins*60*1000));
+              var expires = "expires="+d.toUTCString();  
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+            setCookie('lat','',0);
             infoWindow.close();
-              
+
             $("#analytics").load('pick.html');
          });
 
