@@ -68,68 +68,65 @@
         </div>        
         
       </div>
-  
-      <script type="text/javascript">
-      var infoWindow = new google.maps.InfoWindow(); 
-        function initMap() {
-            //map options
-          var uluru = {lat:14.5995, lng: 120.9842};
-          var hehe = {lat:14.5547, lng: 121.0244};
-          var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 11,
-            center: uluru
-              
-          });
-      <?php
-                  $hostdb = "localhost";  // MySQl host
-                  $userdb = "root";  // MySQL username
-                  $passdb = "";  // MySQL password
-                  $namedb = "pureoxy";  // MySQL database name
-                  $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
-                    $strQuery = "SELECT latitude, longitude FROM module";
-                      // Execute the query, or else return the error message.
-                  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
-        
-                  while($row = mysqli_fetch_array($result)) {
+   <?php 
 
-                    ?> addMarker({lat:<?php echo $row["latitude"]?>, lng:<?php echo $row["longitude"]?>});
-          <?php
-                }
-            ?>                   
-          //add Marker function
-          function addMarker(lat,lng){
-                        var infoWindow = new google.maps.InfoWindow({
-                        content: 'Makati'
-                    });
+    $markers = array();         
+    $sql_locations1="SELECT DISTINCT id,latitude,longitude from `module` DESC limit 1";
+    $result1 = mysqli_query($conn,$sql_locations1);
+    while($row=mysqli_fetch_assoc($result1))
+        {                   
+           $markers[] = array(
+            'abc',
+              $row['latitude'],
+            $row['longitude'],          
+            );      
+        }?>
 
-         var marker = new google.maps.Marker({
-                       position: lat,lng,
-                        map: map
-                });
+<div id="map_canvas" onload="initMap()"></div>
+      <script>
+function initialize() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: "roadmap",
+        center: new google.maps.LatLng(20.5937, 78.9629), // somewhere in the uk BEWARE center is required
+        zoom: 1,
+    };
+    // Display a map on the page
+    map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    map.setTilt(45);
+    // Multiple Markers
+    var markers = <?php echo json_encode( $markers );?>;
+     // Display multiple markers on a map
+    var infoWindow = new google.maps.InfoWindow();
+    var marker, i;
+    // Loop through our array of markers & place each one on the map
+    for (i = 0; i < markers.length; i++) {
+        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title: markers[i][0]
+        });
+        // Allow each marker to have an info window
+        google.maps.event.addListener(marker, 'click',  (function (marker, i) {
+            return function () {
+                infoWindow.setContent(infoWindowContent[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
 
-         google.maps.event.addListener(marker,'mouseover',function(){
-      
-              infoWindow.open(map,marker);
-              var latitude = marker.getPosition().lat();
-              var longitude = marker.getPosition().lng();
-              $("#analytics").load('sample.php?lat=' + latitude + '&lng=' + longitude);
-            
-          
-          });
-
-         google.maps.event.addListener(marker,'click',function(){
-
-          var latitude = marker.getPosition().lat();
-          var longitude = marker.getPosition().lng();
-          window.open("history.php?lat=" + latitude + "&lng=" + longitude);
-         });
-         google.maps.event.addListener(marker,'mouseout', function(){
-            
-            infoWindow.close();
-            $("#analytics").load('pick.html');
-         });
-        }
-  } 
+        // Automatically center the map fitting all markers on the screen
+        map.fitBounds(bounds);
+    }
+    //Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function (event) {
+        this.setZoom(5);
+        google.maps.event.removeListener(boundsListener);
+    });
+}
+google.maps.event.addDomListener(window, 'load', initialize);
           </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBG-tC1rtLmm_O3A3Nw_ifto3QF0kYBdZw&callback=initMap">
