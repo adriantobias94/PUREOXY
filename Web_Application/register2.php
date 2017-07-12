@@ -1,5 +1,7 @@
 <?php
-session_start();
+
+require 'path.php';
+init_cobalt();
 $_SESSION['message'] = '';
 $mysqli = new mysqli('localhost','root','','pureoxy');
 
@@ -8,24 +10,70 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
   if ($_POST['password'] == $_POST['confirmpassword']){
     
 
-    $username = $mysqli->real_escape_string($_POST['username']);
-    $email = $mysqli->real_escape_string($_POST['email']);
-    //$password = md5($_POST['password']);
+    $username = $_POST['username'];
+    // $email = $mysqli->real_escape_string($_POST['email']);
+    $password = $_POST['password'];
+
 
 
       $first_name = $_POST['first_name'];
       $last_name = $_POST['last_name'];
       $middle_name = $_POST['middle_name'];
-      $sql = "INSERT INTO person (first_name, last_name, middle_name) " . "VALUES ('" .$first_name."','".$last_name."','".$middle_name."')";
+     // $sql = "INSERT INTO person (first_name, last_name, middle_name) " . "VALUES ('" .$first_name."','".$last_name."','".$middle_name."')";
+
+      
+      $array = array();
+      $array['first_name'] = $first_name;
+      $array['last_name'] = $last_name;
+      $array['middle_name'] = $middle_name;
+      $array['gender'] = "";
+      $dbh = cobalt_load_class('person');
+      $dbh->add($array);
 
 
-    if ($mysqli->query($sql) === true){
-      $_SESSION['message'] = 'Registration Successful!';
-        header("location: index.html");
-    }
-    else{
-      $_SESSION['message'] = "User could not be added";
-    }
+      $person_id = $dbh->auto_id;
+
+
+
+
+
+      require 'password_crypto.php';
+            //Hash the password using default Cobalt password hashing technique
+
+
+            $hashed_password = cobalt_password_hash('NEW',$password, $username, $new_salt, $new_iteration, $new_method);
+            
+            $arr_form_data['person_id'] = $person_id;
+            $arr_form_data['username'] = $username;
+            $arr_form_data['password'] = $hashed_password;
+            $arr_form_data['salt'] = $new_salt;
+            $arr_form_data['iteration'] = $new_iteration;
+            $arr_form_data['method'] = $new_method;
+          
+            $dbh_user = cobalt_load_class('user');
+
+
+            $dbh_user->add($arr_form_data);
+
+            //Permissions from role, if role was chosen
+              $role_id='1';
+            if($role_id!='')
+            {
+
+
+           
+                $db = new data_abstraction();
+                $db->execute_query("INSERT `user_passport` SELECT '" . quote_smart($username) . "', `link_id` FROM user_role_links WHERE role_id='" . quote_smart($role_id) . "'");
+            }
+
+            redirect('index.html');
+    // if (){
+   //    $_SESSION['message'] = 'Registration Successful!';
+   //     header("location: index.html");
+  //  }
+   // else{
+   ///   $_SESSION['message'] = "User could not be added";
+  // }
 
 
   } 

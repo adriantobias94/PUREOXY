@@ -46,6 +46,7 @@ if(xsrf_guard()){
 
 				  if ($mysqli->query($sql) === true){
       					
+				  	$deleteQuery = "DELETE FROM sms_in"
         				redirect(HOME_PAGE);
     					}
 			//}

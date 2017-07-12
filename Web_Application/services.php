@@ -80,59 +80,59 @@
             center: uluru
               
           });
-              <?php
-        $hostdb = "localhost";  // MySQl host
-        $userdb = "root";  // MySQL username
-        $passdb = "";  // MySQL password
-        $namedb = "pureoxy";  // MySQL database name
-          $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
-           $strQuery = "SELECT latitude, longitude FROM module";
-      // Execute the query, or else return the error message.
-          $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+      <?php
+                  $hostdb = "localhost";  // MySQl host
+                  $userdb = "root";  // MySQL username
+                  $passdb = "";  // MySQL password
+                  $namedb = "pureoxy";  // MySQL database name
+                  $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
+                    $strQuery = "SELECT latitude, longitude FROM module";
+                      // Execute the query, or else return the error message.
+                  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
         
-            while($row = mysqli_fetch_array($result)) {
-               ?>  addMarker({lat:<?php echo $row["latitude"]?>, lng:<?php echo $row["longitude"]?>});<?php
-          }
-    ?>
-                     
-          //add Marker function
-          function addMarker(coords){
-            var infoWindow = new google.maps.InfoWindow({
-            content: 'Hi'
-           });
-          var marker = new google.maps.Marker({
-            position: coords,
-            map: map
-           });
-         
-         google.maps.event.addListener(marker,'mouseover',function(){
-        
-              
-              infoWindow.open(map,marker);
-              $("#analytics").load('sample.php');
-              var lat = marker.getPosition().lat();
-              //var longitude = marker.lng();
-              
-              document.cookie = "lat =" + lat;
-              //document.cookie = "longitude =" + longitude;
+                  while($row = mysqli_fetch_array($result)) {
 
-               <?php
-                
-                $lat = $_COOKIE['lat']; 
-                //$lng = $_COOKIE['longitude'];
-               $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
-                  $strQuery = "SELECT DISTINCT * FROM module WHERE latitude='" .$lat. "'"; //AND longitude='".$lng."'";
-              // Execute the query, or else return the error message.
-               $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
-        
-                while($row = mysqli_fetch_array($result)) {
-                    ?> infoWindow.setContent('<?php echo "ID: " .$row['location']. " "; ?>');
-                    <?php
-          }
-    ?>
-          });
-         google.maps.event.addListener(marker,'mouseout', function(){
+                    ?> addMarker({lat:<?php echo $row["latitude"]?>, lng:<?php echo $row["longitude"]?>});
+
+                        
             
+                      
+
+
+
+          <?php
+                }
+            ?>                   
+          //add Marker function
+          function addMarker(lat,lng){
+
+              
+                        var infoWindow = new google.maps.InfoWindow({
+                        content: 'Makati'
+                    });
+
+         var marker = new google.maps.Marker({
+                       position: lat,lng,
+                        map: map
+                });
+
+         google.maps.event.addListener(marker,'mouseover',function(){
+      
+              infoWindow.open(map,marker);
+              var latitude = marker.getPosition().lat();
+              var longitude = marker.getPosition().lng();
+              $("#analytics").load('sample.php?lat=' + latitude + '&lng=' + longitude);
+            
+          
+          });
+
+         google.maps.event.addListener(marker,'click',function(){
+
+          var latitude = marker.getPosition().lat();
+          var longitude = marker.getPosition().lng();
+          window.open("history.php?lat=" + latitude + "&lng=" + longitude);
+         });
+         google.maps.event.addListener(marker,'mouseout', function(){
             
             infoWindow.close();
             $("#analytics").load('pick.html');
