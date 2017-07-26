@@ -119,7 +119,7 @@
                     ],
                     data: [
                     {
-                        type: "line",                
+                        type: "spline",                
                         dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
                     }
                     ]
@@ -147,7 +147,7 @@
                     ],
                     data: [
                     {
-                        type: "line",                
+                        type: "spline",                
                         dataPoints: <?php echo json_encode($dataPoints2, JSON_NUMERIC_CHECK); ?>
                     }
                     ]

@@ -15,10 +15,24 @@ if(xsrf_guard()){
 
 		if($_POST['btn_submit'])
 		{
+
+			 $hostdb = "localhost";  // MySQl host
+   			 $userdb = "root";  // MySQL username
+    		 $passdb = "";  // MySQL password
+  			 $namedb = "pureoxy";  // MySQL database name
+
+      $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
+      
+      $countSearch = "SELECT COUNT(*) FROM sms_in";
+      $result2 = $dbhandle->query($countSearch) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+
+      $key = mysqli_fetch_array($result2);
+      $id = $key['COUNT(*)'];
+
+      for($i = 0; $i<$id; $i++){
 			init_var($message);	
 			init_var($push);
 			$dbh = cobalt_load_class('sms_in');
-			//for( $i = 0; $i<5; $i++ ){
 				$thearray = "";
 				$anarray = "";
 				$result = $dbh->execute_query('SELECT * FROM `sms_in` LIMIT 1')->result;
@@ -29,15 +43,16 @@ if(xsrf_guard()){
 
 				$mysqli = new mysqli('localhost','root','','pureoxy');
 
-				if($thearray[0] <= 450 AND $thearray[1] <= 30){
+
+				if($thearray[0] <= 100 AND $thearray[1] <= 100){
 					$quality = "SAFE";
 					$percentage = 20;
 				}
-				if($thearray[0] > 450 OR $thearray[0] <= 600 AND $thearray[1] > 30 OR $thearray[1] <= 70){
-					$quality = "ACCEPTABLE";
+				if($thearray[0] >  100 AND $thearray[0] <= 300 OR $thearray[1] > 100 AND $thearray[1] <= 300){
+					$quality = "DANGEROUS";
 					$percentage = 35;
 				}
-				if($thearray[0] > 600 OR $thearray[0] <= 1000 AND $thearray[1] > 70 OR $thearray[1] <= 100){
+				if($thearray[0] > 600 AND $thearray[0] <= 1000 AND $thearray[1] > 70 AND $thearray[1] <= 100){
 					$quality = "SUBPAR";
 					$percentage = 50;
 				}
@@ -46,22 +61,18 @@ if(xsrf_guard()){
 
 				  if ($mysqli->query($sql) === true){
       					
-				  	$deleteQuery = "DELETE FROM sms_in"
-        				redirect(HOME_PAGE);
-    					}
-			//}
-			
-			if($message != ''){
-				$message_type = 'error';
+				  	$deleteQuery = "DELETE FROM sms_in WHERE id = '".$row['id']."'";
+					
+					$mysqli->query($deleteQuery);
+
 			}
-			else
-		{	
-			redirect(HOME_PAGE);
-		}
+			
 	
-		}
 		
 	}
+		
+	}
+}
 
 
 $html = cobalt_load_class('air_data_html');

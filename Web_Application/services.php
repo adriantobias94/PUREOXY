@@ -8,7 +8,7 @@
         width: 100%;
        }
     </style>
-    <title>Bootstrap Example</title>
+    <title>Pure Oxy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -39,13 +39,10 @@
                         <a href="about.html">About</a>
                     </li>
                     <li>
-                        <a href="services.php">Services</a>
+                        <a href="services.php">Air Quality</a>
                     </li>
                     <li>
                       <a href="#">Contact</a>
-                    </li>
-                    <li>
-                        <a href="register2.php">Register</a>
                     </li>
                 </ul>
             </div>
@@ -99,7 +96,7 @@
           //add Marker function
           function addMarker(lat,lng){
                         var infoWindow = new google.maps.InfoWindow({
-                        content: 'Makati'
+                        content: ''
                     });
 
          var marker = new google.maps.Marker({
@@ -112,7 +109,7 @@
               infoWindow.open(map,marker);
               var latitude = marker.getPosition().lat();
               var longitude = marker.getPosition().lng();
-              $("#analytics").load('sample.php?lat=' + latitude + '&lng=' + longitude);
+                $("#analytics").load('sample.php?lat=' + latitude + '&lng=' + longitude);
             
           
           });
