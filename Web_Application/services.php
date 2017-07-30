@@ -118,7 +118,7 @@
 
           var latitude = marker.getPosition().lat();
           var longitude = marker.getPosition().lng();
-          window.open("history.php?lat=" + latitude + "&lng=" + longitude);
+          window.open("forecast2.php?lat=" + latitude + "&lng=" + longitude);
          });
          google.maps.event.addListener(marker,'mouseout', function(){
             

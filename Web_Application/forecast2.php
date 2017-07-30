@@ -1,10 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-
-<head>  
- <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-</head>
-<body>
 <?php
 if(isset($_GET['lat'])){
 
@@ -23,7 +16,7 @@ if(isset($_GET['lat'])){
 
       $key = mysqli_fetch_array($result2);
       $id = $key['id'];
-      $name = "" .$key['location']. " At " .$key['city']. " :";
+      $name = "" .$key['location']. " in " .$key['city']. "";
       
       $checkLatest = "SELECT co, co2 FROM air_data WHERE module_id='".$id."' ORDER BY id DESC LIMIT 1";  
 
@@ -67,44 +60,57 @@ if(isset($_GET['lat'])){
 
       
     ?>
- <script type="text/javascript">
-  $(function () {
+<!DOCTYPE HTML>
+<html>
+
+<head>  
+ <title>Historical Data of <?php echo $name ?></title>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+
+
+<script type="text/javascript">
+  window.onload = function () {
     var chart = new CanvasJS.Chart("chartContainer",
-    {      
+    {
       title:{
-        text: "CO and CO2 Levels"
-      },
-      animationEnabled: true,
-      axisY :{
+        text: "Multi-Series Spline Area Chart"
+      }, 
+      legend: {
+		fontSize: 50
+	},
+     axisY :{
         includeZero: false,
-        maximum: 200
+        maximum: 500
       },
-      toolTip: {
-        shared: "true"
-      },
+
+      animationEnabled: true,              
       data: [
       {        
-        type: "spline", 
+        type: "splineArea",
+        color: "rgba(67, 158, 226, 0.9)",
         showInLegend: true,
         name: "CO Level",
-        markerSize: 0,        
-        dataPoints:  <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+        dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
       },
       {        
-        type: "spline", 
+        type: "splineArea",
+        color: "rgba(67, 195, 168, 0.9)",
         showInLegend: true,
         name: "CO2 Level",
-        markerSize: 0,        
         dataPoints: <?php echo json_encode($dataPoints2, JSON_NUMERIC_CHECK); ?>
-      }      
+      
+      }             
+      
       ]
     });
 
-chart.render();
-});
-</script>
-
+    chart.render();
+  }
+  </script>
   <div id="chartContainer" style="height: 300px; width: 100%;">
   </div>
 </body>
+
 </html>
