@@ -78,11 +78,11 @@ if(isset($_GET['lat'])){
         text: "Multi-Series Spline Area Chart"
       }, 
       legend: {
-		fontSize: 50
-	},
+		    fontSize: 20
+	     },
      axisY :{
         includeZero: false,
-        maximum: 500
+        maximum: 300
       },
 
       animationEnabled: true,              
