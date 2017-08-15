@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
   <head>
     <style>
@@ -20,6 +21,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
+
    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -76,6 +78,8 @@
             zoom: 11,
             center: uluru
               
+
+          
           });
       <?php
                   $hostdb = "localhost";  // MySQl host
@@ -94,6 +98,22 @@
                 }
             ?>                   
           //add Marker function
+          var triangleCoords = [
+    {lat: 25.774, lng: -80.190},
+    {lat: 18.466, lng: -66.118},
+    {lat: 32.321, lng: -64.757},
+    {lat: 25.774, lng: -80.190}
+  ];
+
+  var bermudaTriangle = new google.maps.Polygon({
+    paths: triangleCoords,
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
           function addMarker(lat,lng){
                         var infoWindow = new google.maps.InfoWindow({
                         content: ''
