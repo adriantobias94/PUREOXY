@@ -109,6 +109,26 @@ function initialize() {
             map: map,
             title: markers[i][0]
         });
+
+         var triangleCoords = [
+          {lat: 25.774, lng: -80.190}
+          {lat: 32.321, lng: -64.757},
+          {lat: 25.774, lng: -80.190},
+          {lat: -12.002, lng: -77.001}
+
+        ];
+
+        // Construct the polygon.
+        var bermudaTriangle = new google.maps.Polygon({
+          paths: triangleCoords,
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35
+        });
+        bermudaTriangle.setMap(map);
+
         // Allow each marker to have an info window
         google.maps.event.addListener(marker, 'click',  (function (marker, i) {
             return function () {
