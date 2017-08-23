@@ -111,7 +111,7 @@ function initialize() {
         });
 
          var triangleCoords = [
-          {lat: 25.774, lng: -80.190}
+          {lat: 25.774, lng: -80.190},
           {lat: 32.321, lng: -64.757},
           {lat: 25.774, lng: -80.190},
           {lat: -12.002, lng: -77.001}
@@ -130,7 +130,7 @@ function initialize() {
         bermudaTriangle.setMap(map);
 
         // Allow each marker to have an info window
-        google.maps.event.addListener(marker, 'click',  (function (marker, i) {
+        google.maps.event.addListener(marker, 'click',  (function (marker, i){
             return function () {
                 infoWindow.setContent(infoWindowContent[i][0]);
                 infoWindow.open(map, marker);
@@ -149,7 +149,7 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
           </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBG-tC1rtLmm_O3A3Nw_ifto3QF0kYBdZw&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBG-tC1rtLmm_O3A3Nw_ifto3QF0kYBdZw&callback=initMap">
     </script>
   </body>
       
